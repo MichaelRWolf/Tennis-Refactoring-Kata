@@ -19,31 +19,26 @@ public class TennisGame1 implements TennisGame {
     }
 
     public String getScore() {
-        return applesauce();
-    }
-
-    private String applesauce() {
-        String score;
         if (isTiedScore()) {
-            score = switch (scorePlayer1) {
-                case 0 -> "Love-All";
-                case 1 -> "Fifteen-All";
-                case 2 -> "Thirty-All";
-                default -> "Deuce";
-            };
+            return switch (scorePlayer1) {
+                    case 0, 1, 2 ->
+                            "%s-All".formatted(intScoreToStringScore(scorePlayer1));
+                    default ->
+                            "Deuce";
+                };
         } else if (isAnyPlayerAtOrAboveForty()) {
-            score = getScoreStringForAtOrAbove40();
+//@formatter:off
+            return      isAdvantagePlayer1()    ? "Advantage player1" :
+                        isAdvantagePlayer2()    ? "Advantage player2" :
+                        isWinPlayer1()          ? "Win for player1" :
+                                                  "Win for player2";
+//@formatter:on
         } else {
-            score = getScoreStringForOtherCases();
+            String scoreStringPlayer1 = intScoreToStringScore(scorePlayer1);
+            String scoreStringPlayer2 = intScoreToStringScore(scorePlayer2);
+
+            return "%s-%s".formatted(scoreStringPlayer1, scoreStringPlayer2);
         }
-        return score;
-    }
-
-    private String getScoreStringForOtherCases() {
-        String scoreStringPlayer1 = intScoreToStringScore(scorePlayer1);
-        String scoreStringPlayer2 = intScoreToStringScore(scorePlayer2);
-        return "%s-%s".formatted(scoreStringPlayer1, scoreStringPlayer2);
-
     }
 
     private static String intScoreToStringScore(int scoreAsInt) {
@@ -54,15 +49,6 @@ public class TennisGame1 implements TennisGame {
             case 3 -> "Forty";
             default -> throw new IllegalStateException("Unexpected value: " + scoreAsInt);
         };
-    }
-
-    private String getScoreStringForAtOrAbove40() {
-//@formatter:off
-        return  isAdvantagePlayer1() ? "Advantage player1" :
-                isAdvantagePlayer2() ? "Advantage player2" :
-                isWinPlayer1()       ? "Win for player1"   :
-                                       "Win for player2";
-//@formatter:on
     }
 
     private boolean isWinPlayer1() {
